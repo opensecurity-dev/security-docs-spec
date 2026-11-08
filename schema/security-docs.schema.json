@@ -1,0 +1,2051 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/opensecurity-dev/security-docs-spec/schema/security-docs.schema.json",
+  "$ref": "#/$defs/DocumentSet",
+  "$defs": {
+    "AccessControl": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "mfaRequired": {
+          "type": "boolean",
+          "description": "MFARequired for staff access to production and administrative consoles."
+        },
+        "leastPrivilege": {
+          "type": "string",
+          "description": "LeastPrivilege describes how access is limited."
+        },
+        "customerDataAccess": {
+          "type": "string",
+          "description": "CustomerDataAccess describes when staff may read customer data and how it is audited."
+        },
+        "personnel": {
+          "type": "string",
+          "description": "Personnel describes agreements, background checks and training."
+        },
+        "endpoints": {
+          "type": "string",
+          "description": "Endpoints describes how staff devices are secured."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "AccessControl is how staff get to production systems and customer data."
+    },
+    "Acknowledgement": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "description": "Acknowledgement credits a researcher."
+    },
+    "Availability": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "commitment": {
+          "$ref": "#/$defs/AvailabilityCommitment"
+        },
+        "noCommitment": {
+          "type": "string",
+          "description": "NoCommitment is the statement used when no target is made. Exactly one\nof Commitment and NoCommitment is set."
+        },
+        "statusPageUrl": {
+          "type": "string"
+        },
+        "uptimeHistoryUrl": {
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/Section"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "Availability states uptime targets, or that none is made."
+    },
+    "AvailabilityCommitment": {
+      "properties": {
+        "targetPercent": {
+          "type": "number",
+          "description": "TargetPercent, such as 99.9."
+        },
+        "period": {
+          "type": "string",
+          "description": "Period, such as \"monthly\"."
+        },
+        "appliesTo": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "AppliesTo names plans or customers the commitment covers; empty means all."
+        },
+        "credits": {
+          "items": {
+            "$ref": "#/$defs/ServiceCredit"
+          },
+          "type": "array"
+        },
+        "measurement": {
+          "type": "string"
+        },
+        "exclusions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "targetPercent",
+        "period"
+      ],
+      "description": "AvailabilityCommitment is an uptime target, with or without credits."
+    },
+    "Backups": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "frequency": {
+          "type": "string",
+          "description": "Frequency, such as \"hourly\", \"daily\", \"continuous (point-in-time restore)\"."
+        },
+        "retentionDays": {
+          "type": "integer"
+        },
+        "encrypted": {
+          "type": "boolean"
+        },
+        "offsite": {
+          "type": "boolean"
+        },
+        "restoreTesting": {
+          "type": "string",
+          "description": "RestoreTesting, such as \"quarterly restore drills\"."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Backups describes database and file backups."
+    },
+    "Certification": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the certification or report. Only the name is recorded; the\nframework's own text never belongs in a document set."
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "audit",
+            "self-assessment",
+            "inherited"
+          ]
+        },
+        "issuer": {
+          "type": "string",
+          "description": "Issuer is the auditor or assessor, such as a QSA firm."
+        },
+        "period": {
+          "type": "string",
+          "description": "Period is the audit period, such as \"2025-07-01/2026-06-30\"."
+        },
+        "scope": {
+          "type": "string",
+          "description": "Scope, such as \"the payment page\" or, for inherited, \"AWS data centers\"."
+        },
+        "validUntil": {
+          "type": "string",
+          "description": "ValidUntil is a date (YYYY-MM-DD)."
+        },
+        "availableUnderNda": {
+          "type": "boolean",
+          "description": "AvailableUnderNDA says the report is shared with customers under an NDA."
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "kind"
+      ],
+      "description": "Certification is an audit, self-assessment or a provider's attestation the product relies on."
+    },
+    "Contact": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Contact is an email address, a URL, or both."
+    },
+    "Contacts": {
+      "properties": {
+        "security": {
+          "$ref": "#/$defs/Contact"
+        },
+        "support": {
+          "$ref": "#/$defs/Contact"
+        },
+        "privacy": {
+          "$ref": "#/$defs/Contact"
+        },
+        "abuse": {
+          "$ref": "#/$defs/Contact"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Contacts are the addresses the documents refer to."
+    },
+    "ControlRef": {
+      "properties": {
+        "framework": {
+          "type": "string",
+          "description": "Framework, such as \"nist-sp-800-53-r5\", \"fedramp-ksi\" or \"fedramp-rule\"."
+        },
+        "control": {
+          "type": "string",
+          "description": "Control ID, such as \"SC-8\", \"KSI-IAM-JIT\" or \"CDS-CSO-PUB\"."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "framework",
+        "control"
+      ],
+      "description": "ControlRef maps a claim to a control in a framework."
+    },
+    "CustomDocument": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/Section"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "CustomDocument is any other document built from sections, such as a longevity promise or an AI data-use statement."
+    },
+    "DataHandling": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/Section"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "DataHandling covers deletion, retention, location and transfers: the security-related parts of a privacy policy."
+    },
+    "DataLifecycle": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "trashRetentionDays": {
+          "type": "integer",
+          "description": "TrashRetentionDays is how long trashed content stays recoverable; 0 means no trash."
+        },
+        "purgeAfterCancellationDays": {
+          "type": "integer",
+          "description": "PurgeAfterCancellationDays is when cancelled accounts' data leaves live systems."
+        },
+        "backupExpiryDays": {
+          "type": "integer",
+          "description": "BackupExpiryDays is when the last backup holding deleted data expires,\ncounted from deletion. It is at least PurgeAfterCancellationDays."
+        },
+        "export": {
+          "type": "string",
+          "description": "Export describes how customers take their data out."
+        },
+        "retention": {
+          "type": "string",
+          "description": "Retention is optional prose about other retention periods."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "DataLifecycle is what happens to customer data when it is deleted or the account is cancelled."
+    },
+    "DataStoreEncryption": {
+      "properties": {
+        "store": {
+          "type": "string",
+          "description": "Store is a role, such as \"application database\", \"file storage\", \"backups\"."
+        },
+        "encrypted": {
+          "type": "boolean"
+        },
+        "method": {
+          "type": "string",
+          "description": "Method, such as \"AES-256 (provider-managed keys)\" or \"GPG\"."
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "store",
+        "encrypted"
+      ],
+      "description": "DataStoreEncryption says whether one data store is encrypted at rest."
+    },
+    "DocumentSet": {
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "description": "Schema is an optional $schema URL for editors."
+        },
+        "schemaVersion": {
+          "type": "string"
+        },
+        "organization": {
+          "$ref": "#/$defs/Organization"
+        },
+        "product": {
+          "$ref": "#/$defs/Product"
+        },
+        "contacts": {
+          "$ref": "#/$defs/Contacts"
+        },
+        "publication": {
+          "$ref": "#/$defs/Publication",
+          "description": "Publication says where the rendered documents are served."
+        },
+        "review": {
+          "$ref": "#/$defs/ReviewPolicy",
+          "description": "Review sets how often documents must be reviewed."
+        },
+        "facts": {
+          "$ref": "#/$defs/Facts"
+        },
+        "documents": {
+          "$ref": "#/$defs/Documents"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "organization",
+        "product",
+        "contacts",
+        "documents"
+      ],
+      "description": "DocumentSet is one product's security documentation."
+    },
+    "Documents": {
+      "properties": {
+        "securityOverview": {
+          "$ref": "#/$defs/SecurityOverview"
+        },
+        "securityResponse": {
+          "$ref": "#/$defs/SecurityResponse"
+        },
+        "subprocessors": {
+          "$ref": "#/$defs/Subprocessors"
+        },
+        "dataHandling": {
+          "$ref": "#/$defs/DataHandling"
+        },
+        "incidentResponse": {
+          "$ref": "#/$defs/IncidentResponse"
+        },
+        "availability": {
+          "$ref": "#/$defs/Availability"
+        },
+        "custom": {
+          "items": {
+            "$ref": "#/$defs/CustomDocument"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Documents holds the documents in the set."
+    },
+    "Encryption": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "inTransit": {
+          "$ref": "#/$defs/EncryptionInTransit"
+        },
+        "atRest": {
+          "items": {
+            "$ref": "#/$defs/DataStoreEncryption"
+          },
+          "type": "array"
+        },
+        "passwordHashing": {
+          "$ref": "#/$defs/PasswordHashing"
+        },
+        "applicationLevel": {
+          "type": "string",
+          "description": "ApplicationLevel describes field-level or \"at-work\" encryption, if any."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Encryption covers data in transit, at rest and in use."
+    },
+    "EncryptionInTransit": {
+      "properties": {
+        "minTlsVersion": {
+          "type": "string",
+          "description": "MinTLSVersion, such as \"1.2\"."
+        },
+        "hsts": {
+          "type": "boolean"
+        },
+        "internal": {
+          "type": "string",
+          "description": "Internal describes traffic inside the private network, including any\nthat is not encrypted."
+        },
+        "reportUrl": {
+          "type": "string",
+          "description": "ReportURL is a public scan of the TLS setup, such as SSL Labs."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "EncryptionInTransit describes encryption between clients and the service."
+    },
+    "EncryptionKey": {
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "url"
+      ],
+      "description": "EncryptionKey is a public key for encrypted reports."
+    },
+    "EvidenceRef": {
+      "properties": {
+        "ref": {
+          "type": "string",
+          "description": "Ref is an identifier or URL. Internal references are never rendered."
+        },
+        "description": {
+          "type": "string"
+        },
+        "public": {
+          "type": "boolean",
+          "description": "Public marks evidence that may be linked from published output, such as an SSL Labs report."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "ref"
+      ],
+      "description": "EvidenceRef points at evidence for a claim."
+    },
+    "Facts": {
+      "properties": {
+        "hosting": {
+          "$ref": "#/$defs/Hosting"
+        },
+        "encryption": {
+          "$ref": "#/$defs/Encryption"
+        },
+        "backups": {
+          "$ref": "#/$defs/Backups"
+        },
+        "dataLifecycle": {
+          "$ref": "#/$defs/DataLifecycle"
+        },
+        "accessControl": {
+          "$ref": "#/$defs/AccessControl"
+        },
+        "incidentNotification": {
+          "$ref": "#/$defs/IncidentNotification"
+        },
+        "lawEnforcement": {
+          "$ref": "#/$defs/LawEnforcement"
+        },
+        "certifications": {
+          "items": {
+            "$ref": "#/$defs/Certification"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Facts are the typed values that several documents state."
+    },
+    "Hosting": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/Location"
+          },
+          "type": "array",
+          "description": "Locations, such as {\"country\": \"US\", \"region\": \"Oregon\"}."
+        },
+        "providers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Providers names the infrastructure providers; each should also be a subprocessor."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description is optional prose, such as how the network is segmented."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Hosting is where the product runs and where its data is stored."
+    },
+    "IncidentNotification": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "notifyWithinHours": {
+          "type": "integer",
+          "description": "NotifyWithinHours after confirming an incident that affects the customer's data."
+        },
+        "timing": {
+          "type": "string",
+          "description": "Timing is used when no hour figure is committed, such as \"without undue delay\"."
+        },
+        "recipient": {
+          "type": "string",
+          "description": "Recipient, such as \"the account owner\"."
+        },
+        "channel": {
+          "type": "string",
+          "description": "Channel, such as \"email\"."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "IncidentNotification is the commitment to tell customers about an incident."
+    },
+    "IncidentResponse": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "process": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Process is the ordered phases of the response (Markdown each)."
+        },
+        "drills": {
+          "type": "string",
+          "description": "Drills describes recovery and response exercises."
+        },
+        "history": {
+          "$ref": "#/$defs/Practice",
+          "description": "History is a claim about past incidents, such as \"no data breach to date\"."
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/Section"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "IncidentResponse summarizes how incidents are handled and reported."
+    },
+    "LawEnforcement": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        },
+        "requiresLegalProcess": {
+          "type": "boolean"
+        },
+        "notifiesCustomers": {
+          "type": "boolean"
+        },
+        "transparencyUrl": {
+          "type": "string",
+          "description": "TransparencyURL links to a transparency report, if any."
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "LawEnforcement is how requests for customer data from governments are handled."
+    },
+    "Location": {
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country is an ISO 3166-1 alpha-2 code, or \"EU\"."
+        },
+        "region": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "country"
+      ],
+      "description": "Location is a country and an optional region within it."
+    },
+    "Organization": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "legalName": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "policyHistoryUrl": {
+          "type": "string",
+          "description": "PolicyHistoryURL shows the history of changes to these documents."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "description": "Organization is the company that runs the product."
+    },
+    "PasswordHashing": {
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "description": "Algorithm, such as \"bcrypt\" or \"argon2id\"."
+        },
+        "parameters": {
+          "type": "string"
+        },
+        "notApplicable": {
+          "type": "string",
+          "description": "NotApplicable explains a product with no passwords, such as passkey or SSO-only sign-in."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "algorithm"
+      ],
+      "description": "PasswordHashing describes how passwords are stored."
+    },
+    "Practice": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "statement": {
+          "type": "string",
+          "description": "Statement is Markdown: what is done, in a sentence or two."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "description": "Practice is one security practice stated as a claim."
+    },
+    "Product": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "description": "Product is the service the documents describe."
+    },
+    "Publication": {
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "description": "BaseURL is the URL the document slugs are relative to, such as\n\"https://example.com/policies/\". It makes links in security.txt absolute."
+        },
+        "securityTxtUrl": {
+          "type": "string",
+          "description": "SecurityTxtURL is where security.txt is served, for its Canonical field."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Publication says where the rendered documents are served."
+    },
+    "ReportingChannel": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "email",
+            "bug-bounty",
+            "web-form",
+            "other"
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "description": "Purpose, such as \"Report security vulnerabilities\"."
+        },
+        "address": {
+          "type": "string",
+          "description": "Address is an email address for email channels."
+        },
+        "url": {
+          "type": "string",
+          "description": "URL is the program or form URL."
+        },
+        "responseTarget": {
+          "type": "string",
+          "description": "ResponseTarget, such as \"72 hours\" or \"two hours\"."
+        },
+        "note": {
+          "type": "string",
+          "description": "Note is Markdown shown after the channel."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "purpose"
+      ],
+      "description": "ReportingChannel is one way to report a security problem."
+    },
+    "ReviewPolicy": {
+      "properties": {
+        "intervalDays": {
+          "type": "integer",
+          "description": "IntervalDays after a document's reviewedAt before lint reports it as stale. Defaults to 365."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ReviewPolicy sets how often documents are reviewed."
+    },
+    "Section": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "intro": {
+          "type": "string",
+          "description": "Intro is Markdown shown before everything else in the section."
+        },
+        "include": {
+          "type": "string",
+          "enum": [
+            "hosting",
+            "encryption",
+            "backups",
+            "dataLifecycle",
+            "accessControl",
+            "incidentNotification",
+            "lawEnforcement",
+            "certifications"
+          ],
+          "description": "Include renders a fact group from the document set's facts."
+        },
+        "practices": {
+          "items": {
+            "$ref": "#/$defs/Practice"
+          },
+          "type": "array"
+        },
+        "outro": {
+          "type": "string",
+          "description": "Outro is Markdown shown after everything else in the section."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "description": "Section is a heading with prose, practices and optionally a fact group."
+    },
+    "SecurityOverview": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/Section"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "SecurityOverview is the main security page of a service."
+    },
+    "SecurityResponse": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "channels": {
+          "items": {
+            "$ref": "#/$defs/ReportingChannel"
+          },
+          "type": "array"
+        },
+        "process": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Process is the ordered steps after a report arrives (Markdown each)."
+        },
+        "inScope": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "InScope and OutOfScope list targets and finding types."
+        },
+        "outOfScope": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "safeHarbor": {
+          "type": "string",
+          "description": "SafeHarbor is the statement protecting good-faith research."
+        },
+        "disclosureDays": {
+          "type": "integer",
+          "description": "DisclosureDays is the coordinated-disclosure window, if one is committed to."
+        },
+        "encryptionKey": {
+          "$ref": "#/$defs/EncryptionKey"
+        },
+        "acknowledgements": {
+          "items": {
+            "$ref": "#/$defs/Acknowledgement"
+          },
+          "type": "array"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/Section"
+          },
+          "type": "array",
+          "description": "Sections are any extra headings."
+        },
+        "securityTxtExpires": {
+          "type": "string",
+          "description": "SecurityTxtExpires is the RFC 9116 Expires value (RFC 3339) for the generated security.txt."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "SecurityResponse is the vulnerability reporting and disclosure policy."
+    },
+    "ServiceCredit": {
+      "properties": {
+        "condition": {
+          "type": "string",
+          "description": "Condition, such as \"an outage exceeds 5 minutes in a day\"."
+        },
+        "credit": {
+          "type": "string",
+          "description": "Credit, such as \"10x the hourly rate for one hour\"."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "condition",
+        "credit"
+      ],
+      "description": "ServiceCredit is one SLA credit rule."
+    },
+    "Source": {
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "analyzer",
+            "attestation",
+            "evidence",
+            "inherited"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "description": "Ref identifies the producer: an analyzer name, an attestation ID, a provider."
+        },
+        "collectedAt": {
+          "type": "string",
+          "description": "CollectedAt is a date (YYYY-MM-DD) or RFC 3339 time."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "description": "Source records where a claim came from."
+    },
+    "Subprocessor": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "description": "URL links to the provider's privacy, GDPR or DPA page."
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/Location"
+          },
+          "type": "array",
+          "description": "Locations where it processes or hosts data."
+        },
+        "headquarters": {
+          "$ref": "#/$defs/Location",
+          "description": "Headquarters is where the contracting company is based, which can\ndiffer from where it hosts data."
+        },
+        "dataCategories": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "DataCategories, such as \"account identity\", \"billing\", \"customer content\"."
+        },
+        "transferMechanism": {
+          "type": "string",
+          "description": "TransferMechanism for personal data leaving the EU or UK, such as \"SCCs\" or \"EU-US DPF\"."
+        },
+        "since": {
+          "type": "string",
+          "description": "Since is the date (YYYY-MM-DD) it was added."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "implemented",
+            "partial",
+            "planned",
+            "alternative",
+            "not-applicable",
+            "todo"
+          ],
+          "description": "Status is required; an empty status is reported by lint."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility defaults to public."
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "reviewed",
+            "verified"
+          ],
+          "description": "Verification defaults to unverified."
+        },
+        "gap": {
+          "type": "string",
+          "description": "Gap says what is missing. Required when status is partial or planned."
+        },
+        "trackingRef": {
+          "type": "string",
+          "description": "TrackingRef points at the work item that closes the gap."
+        },
+        "justification": {
+          "type": "string",
+          "description": "Justification says why the claim does not apply. Required when status is not-applicable."
+        },
+        "source": {
+          "$ref": "#/$defs/Source",
+          "description": "Source records where the claim came from."
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array",
+          "description": "Evidence backs the claim."
+        },
+        "controlRefs": {
+          "items": {
+            "$ref": "#/$defs/ControlRef"
+          },
+          "type": "array",
+          "description": "ControlRefs map the claim to framework controls, such as NIST SP 800-53 SC-8."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes are internal and never rendered."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "purpose"
+      ],
+      "description": "Subprocessor is a third party that processes customer personal data."
+    },
+    "Subprocessors": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "Slug names the rendered file, such as \"security-overview\". Defaults per document type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "LastUpdated is the date (YYYY-MM-DD) shown to readers."
+        },
+        "reviewedAt": {
+          "type": "string",
+          "description": "ReviewedAt is the date (YYYY-MM-DD) a person last reviewed the whole document."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Owner is the role responsible for the document. Never rendered."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "nda",
+            "internal"
+          ],
+          "description": "Visibility of the whole document; defaults to public."
+        },
+        "intro": {
+          "type": "string"
+        },
+        "dpaUrl": {
+          "type": "string",
+          "description": "DPAURL links to the data processing addendum."
+        },
+        "changeNotificationUrl": {
+          "type": "string",
+          "description": "ChangeNotificationURL is where customers subscribe to changes."
+        },
+        "subprocessors": {
+          "items": {
+            "$ref": "#/$defs/Subprocessor"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "description": "Subprocessors is the list of third parties that process personal data."
+    }
+  },
+  "title": "Security documentation set",
+  "description": "One product's security documentation: shared facts and typed documents, rendered to Markdown."
+}
