@@ -1,0 +1,11 @@
+.DS_Store
+*.out
+go.work
+go.work.sum
+/secdocs
+/dist/
+/site/
+
+# Scratch output, never committed
+z/
+tmp/
