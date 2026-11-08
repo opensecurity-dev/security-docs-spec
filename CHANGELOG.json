@@ -1,0 +1,43 @@
+{
+  "irVersion": "1.0",
+  "project": "security-docs-spec",
+  "repository": "https://github.com/opensecurity-dev/security-docs-spec",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": ["grokify", "johncwang@gmail.com"],
+  "releases": [
+    {
+      "version": "v0.1.0",
+      "date": "2026-11-08",
+      "highlights": [
+        { "description": "An open JSON format for a cloud service's self-attested security documents, with typed facts stated once and claims that say how true they are" },
+        { "description": "`secdocs lint` reports what is invalid or still to be done, by rule ID and JSON path" },
+        { "description": "`secdocs render` and `secdocs export` publish Markdown and JSON from one audience-filtered view, so NDA and internal content cannot leak" },
+        { "description": "Builds only on sources that allow free commercial reuse: NIST SP 800-53, FedRAMP's 2026 rules and RFC 9116" }
+      ],
+      "added": [
+        { "description": "`spec` package: `DocumentSet` with shared fact groups and six typed documents (security overview, security response, subprocessors, data handling, incident response, availability) plus custom documents", "commit": "85834a6" },
+        { "description": "Claims with status, verification level, visibility, gaps, justifications, evidence and control references", "commit": "85834a6" },
+        { "description": "Placeholders such as `{{org.name}}` and `{{doc.security-response}}` in prose", "commit": "85834a6" },
+        { "description": "`spec.Load` and `spec.Scaffold` for reading a set and starting one where every claim is todo", "commit": "85834a6" },
+        { "description": "JSON Schema generated from the Go types and embedded as `schema.JSON`", "commit": "3c5abf0" },
+        { "description": "`lint` package: error, warning and info rules for structure, status, gaps, dates, reviews, placeholders, control ID formats and consistency between facts", "commit": "6b28c41" },
+        { "description": "`render` package: Markdown per document with an index, draft mode, gap handling, YAML front matter and a combined file for Pandoc", "commit": "c8fee14" },
+        { "description": "`render.ExportJSON`: the machine-readable copy of the rendered view, refusing unassessed claims unless in draft", "commit": "c8fee14" },
+        { "description": "`render.SecurityTxt`: an RFC 9116 security.txt from the security-response document", "commit": "c8fee14" },
+        { "description": "`secdocs` CLI with `init`, `lint`, `render`, `export`, `security-txt` and `schema` commands", "commit": "e65be0c" }
+      ],
+      "tests": [
+        { "description": "Unit, golden-file and leak tests over a complete fictional example set, Example Notes", "commit": "617ec33" }
+      ],
+      "documentation": [
+        { "description": "README with usage, the document set and library use", "commit": "20b0832" },
+        { "description": "Sources and licensing guide: which frameworks may be embedded and which are named by ID only", "commit": "20b0832" },
+        { "description": "PRD, TRD, PLAN and ROADMAP", "commit": "20b0832" }
+      ],
+      "build": [
+        { "description": "CI with the shared Go workflows: tests across Linux, macOS and Windows, golangci-lint and CodeQL", "commit": "e5ecb4d" }
+      ]
+    }
+  ]
+}
