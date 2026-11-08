@@ -1,0 +1,6 @@
+Contact: mailto:security@example.com
+Expires: 2027-10-31T00:00:00Z
+Policy: https://notes.example.com/policies/security-response
+Acknowledgments: https://notes.example.com/policies/security-response
+Canonical: https://notes.example.com/.well-known/security.txt
+Preferred-Languages: en

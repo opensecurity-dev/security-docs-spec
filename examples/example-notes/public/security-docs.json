@@ -1,0 +1,522 @@
+{
+  "schemaVersion": "0.1",
+  "organization": {
+    "name": "Example Co",
+    "legalName": "Example Co, LLC",
+    "url": "https://example.com",
+    "policyHistoryUrl": "https://github.com/example/policies/commits/main"
+  },
+  "product": {
+    "name": "Example Notes",
+    "url": "https://notes.example.com",
+    "description": "A shared notebook for small teams."
+  },
+  "contacts": {
+    "security": {
+      "email": "security@example.com"
+    },
+    "support": {
+      "url": "https://notes.example.com/support"
+    },
+    "privacy": {
+      "email": "privacy@example.com"
+    }
+  },
+  "publication": {
+    "baseUrl": "https://notes.example.com/policies/",
+    "securityTxtUrl": "https://notes.example.com/.well-known/security.txt"
+  },
+  "review": {
+    "intervalDays": 365
+  },
+  "facts": {
+    "hosting": {
+      "status": "implemented",
+      "verification": "reviewed",
+      "locations": [
+        {
+          "country": "US",
+          "region": "Oregon"
+        }
+      ],
+      "providers": [
+        "Amazon Web Services",
+        "Cloudflare"
+      ],
+      "description": "{{product.name}} runs in a private network on Amazon Web Services. Every request passes through Cloudflare, so the servers' addresses are never public."
+    },
+    "encryption": {
+      "status": "implemented",
+      "verification": "verified",
+      "evidence": [
+        {
+          "ref": "https://www.ssllabs.com/ssltest/analyze.html?d=notes.example.com",
+          "description": "SSL Labs report",
+          "public": true
+        }
+      ],
+      "inTransit": {
+        "minTlsVersion": "1.2",
+        "hsts": true,
+        "internal": "Between Cloudflare and our servers, traffic is encrypted and the certificate is verified. Inside our private network, the application connects to its database over TLS.",
+        "reportUrl": "https://www.ssllabs.com/ssltest/analyze.html?d=notes.example.com"
+      },
+      "atRest": [
+        {
+          "store": "Application database",
+          "encrypted": true,
+          "method": "AES-256, keys managed by the cloud provider"
+        },
+        {
+          "store": "Uploaded files",
+          "encrypted": true,
+          "method": "AES-256, keys managed by the cloud provider"
+        },
+        {
+          "store": "Backups",
+          "encrypted": true,
+          "method": "AES-256"
+        }
+      ],
+      "passwordHashing": {
+        "algorithm": "argon2id",
+        "parameters": "64 MiB memory, 3 iterations"
+      }
+    },
+    "backups": {
+      "status": "implemented",
+      "verification": "reviewed",
+      "frequency": "continuously, with point-in-time restore, plus a nightly export of each database",
+      "retentionDays": 30,
+      "encrypted": true,
+      "offsite": true,
+      "restoreTesting": "every quarter we restore a backup into a separate environment and check it"
+    },
+    "dataLifecycle": {
+      "status": "implemented",
+      "verification": "reviewed",
+      "trashRetentionDays": 30,
+      "purgeAfterCancellationDays": 30,
+      "backupExpiryDays": 60,
+      "export": "You can export all of your notes as Markdown at any time from your account settings.",
+      "retention": "We keep billing records for as long as tax law requires."
+    },
+    "accessControl": {
+      "status": "partial",
+      "verification": "reviewed",
+      "gap": "Access to production is reviewed when people join or leave, but not yet on a fixed schedule.",
+      "trackingRef": "SEC-12",
+      "mfaRequired": true,
+      "leastPrivilege": "Only the people who operate {{product.name}} can reach production systems, and only through an audited gateway.",
+      "customerDataAccess": "We look at your data only when you ask us to, to keep the service running, or when the law requires it.",
+      "personnel": "Everyone with access signs a confidentiality agreement."
+    },
+    "incidentNotification": {
+      "status": "implemented",
+      "verification": "reviewed",
+      "notifyWithinHours": 72,
+      "recipient": "the account owner",
+      "channel": "email"
+    },
+    "lawEnforcement": {
+      "status": "implemented",
+      "verification": "reviewed",
+      "requiresLegalProcess": true,
+      "notifiesCustomers": true
+    },
+    "certifications": [
+      {
+        "status": "implemented",
+        "verification": "verified",
+        "evidence": [
+          {
+            "ref": "https://aws.amazon.com/compliance/soc-faqs/",
+            "public": true
+          }
+        ],
+        "name": "SOC 2 Type II",
+        "kind": "inherited",
+        "scope": "Amazon Web Services data centers",
+        "availableUnderNda": true,
+        "url": "https://aws.amazon.com/compliance/soc-faqs/"
+      },
+      {
+        "status": "planned",
+        "gap": "The first self-assessment is scheduled for next quarter.",
+        "name": "PCI DSS SAQ A",
+        "kind": "self-assessment",
+        "scope": "The payment page, which is hosted by our payment processor"
+      }
+    ]
+  },
+  "documents": {
+    "securityOverview": {
+      "title": "Security overview",
+      "description": "How we keep {{product.name}} and your data secure.",
+      "lastUpdated": "2026-11-01",
+      "reviewedAt": "2026-11-01",
+      "intro": "Your notes are yours, and keeping them safe is our first job. This page says what we do, and where we are not there yet.",
+      "sections": [
+        {
+          "id": "hosting",
+          "title": "Where your data lives",
+          "include": "hosting"
+        },
+        {
+          "id": "encryption",
+          "title": "Your data is encrypted",
+          "include": "encryption"
+        },
+        {
+          "id": "backups",
+          "title": "Backups and redundancy",
+          "include": "backups",
+          "practices": [
+            {
+              "id": "redundancy",
+              "title": "Redundancy",
+              "statement": "The database runs with a standby in a second data center that takes over automatically if the primary fails.",
+              "status": "implemented",
+              "verification": "reviewed"
+            }
+          ]
+        },
+        {
+          "id": "access",
+          "title": "Who can access your data",
+          "include": "accessControl",
+          "practices": [
+            {
+              "id": "access-logging",
+              "title": "Access is logged",
+              "statement": "Every administrative session and every sign-in is recorded in a security event log.",
+              "status": "implemented",
+              "verification": "reviewed",
+              "controlRefs": [
+                {
+                  "framework": "nist-sp-800-53-r5",
+                  "control": "AU-2"
+                },
+                {
+                  "framework": "fedramp-ksi",
+                  "control": "KSI-MLA-LET"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "infrastructure",
+          "title": "Infrastructure and software",
+          "practices": [
+            {
+              "id": "patching",
+              "title": "Security updates",
+              "statement": "Operating system security updates install automatically. Application dependencies are checked for known vulnerabilities on every change.",
+              "status": "implemented",
+              "verification": "reviewed"
+            },
+            {
+              "id": "network",
+              "title": "Network protection",
+              "statement": "Our servers accept web traffic only from Cloudflare, and administrative access only from approved addresses.",
+              "status": "implemented",
+              "verification": "verified"
+            },
+            {
+              "id": "secure-development",
+              "title": "Secure development",
+              "statement": "Every change is reviewed and tested before it is released, and the same release runs in a staging environment before production.",
+              "status": "implemented",
+              "verification": "reviewed"
+            }
+          ]
+        },
+        {
+          "id": "monitoring",
+          "title": "Monitoring",
+          "practices": [
+            {
+              "id": "security-monitoring",
+              "title": "Security monitoring",
+              "statement": "Security events from the application are collected in one place.",
+              "status": "partial",
+              "verification": "reviewed",
+              "gap": "Alerts on suspicious activity are being set up; today the events are reviewed by hand.",
+              "trackingRef": "SEC-7"
+            },
+            {
+              "id": "abuse-protection",
+              "title": "Abuse protection",
+              "statement": "Sign-in and sign-up are rate limited to slow down password guessing.",
+              "status": "implemented",
+              "verification": "reviewed"
+            }
+          ]
+        },
+        {
+          "id": "physical",
+          "title": "Physical security",
+          "practices": [
+            {
+              "id": "physical",
+              "title": "Data centers",
+              "statement": "We run no servers of our own. Our cloud provider's data centers are guarded, access-controlled and independently audited.",
+              "status": "implemented",
+              "verification": "verified",
+              "evidence": [
+                {
+                  "ref": "https://aws.amazon.com/compliance/data-center/controls/",
+                  "description": "AWS data center controls",
+                  "public": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "billing",
+          "title": "Billing information",
+          "practices": [
+            {
+              "id": "payments",
+              "title": "Payment processing",
+              "statement": "Card details go straight to our payment processor; they never touch our servers.",
+              "status": "implemented",
+              "verification": "reviewed"
+            }
+          ]
+        },
+        {
+          "id": "testing",
+          "title": "Security testing",
+          "practices": [
+            {
+              "id": "vulnerability-reports",
+              "title": "Vulnerability reports",
+              "statement": "We welcome reports from security researchers. See our [security response page]({{doc.security-response}}).",
+              "status": "implemented",
+              "verification": "reviewed"
+            },
+            {
+              "id": "penetration-testing",
+              "title": "Penetration testing",
+              "status": "planned",
+              "gap": "We have not yet had an independent penetration test. The first is planned before we offer team plans.",
+              "trackingRef": "SEC-15"
+            }
+          ]
+        },
+        {
+          "id": "certifications",
+          "title": "Audits and certifications",
+          "include": "certifications",
+          "outro": "{{org.name}} itself has not completed an independent audit, and this page is a self-assessment."
+        },
+        {
+          "id": "incidents",
+          "title": "If something goes wrong",
+          "include": "incidentNotification"
+        },
+        {
+          "id": "legal",
+          "title": "Requests for your data",
+          "include": "lawEnforcement"
+        },
+        {
+          "id": "contact",
+          "title": "Reporting a concern",
+          "intro": "See our [security response page]({{doc.security-response}}) to report a vulnerability or an incident."
+        }
+      ]
+    },
+    "securityResponse": {
+      "title": "Security response",
+      "description": "How to report a security problem in {{product.name}}.",
+      "lastUpdated": "2026-11-01",
+      "reviewedAt": "2026-11-01",
+      "intro": "If you have found a security problem in {{product.name}}, we want to hear about it.",
+      "channels": [
+        {
+          "id": "email",
+          "kind": "email",
+          "purpose": "Report a security vulnerability",
+          "address": "security@example.com",
+          "responseTarget": "3 business days",
+          "status": "implemented",
+          "verification": "reviewed"
+        },
+        {
+          "id": "support",
+          "kind": "web-form",
+          "purpose": "For anything that is not urgent or sensitive",
+          "url": "https://notes.example.com/support",
+          "status": "implemented",
+          "verification": "reviewed"
+        }
+      ],
+      "process": [
+        "We acknowledge your report.",
+        "We confirm the problem and assess its severity, and keep you informed.",
+        "We fix it. We do not disclose an issue until it is fixed.",
+        "We publish a note about the fix and, if you wish, credit you."
+      ],
+      "inScope": [
+        "notes.example.com and its subdomains",
+        "The {{product.name}} desktop and mobile apps"
+      ],
+      "outOfScope": [
+        "Denial of service",
+        "Social engineering of our staff or customers",
+        "Reports from automated scanners without a demonstrated impact"
+      ],
+      "safeHarbor": "We will not take legal action against research done in good faith that follows this policy, avoids harm to customers and their data, and gives us time to fix the problem before it is disclosed.",
+      "disclosureDays": 90,
+      "acknowledgements": [
+        {
+          "name": "A. Researcher",
+          "url": "https://researcher.example.org",
+          "year": 2026
+        }
+      ],
+      "securityTxtExpires": "2027-10-31"
+    },
+    "subprocessors": {
+      "title": "Subprocessors",
+      "description": "The third parties that process personal data for {{product.name}}.",
+      "lastUpdated": "2026-11-01",
+      "reviewedAt": "2026-11-01",
+      "intro": "We use a small number of third parties to run {{product.name}}. Each is bound by a data processing agreement.",
+      "changeNotificationUrl": "https://example.com/policy-updates",
+      "subprocessors": [
+        {
+          "id": "aws",
+          "name": "Amazon Web Services",
+          "url": "https://aws.amazon.com/compliance/gdpr-center/",
+          "purpose": "Cloud hosting",
+          "locations": [
+            {
+              "country": "US"
+            }
+          ],
+          "dataCategories": [
+            "all customer data"
+          ],
+          "status": "implemented",
+          "verification": "reviewed"
+        },
+        {
+          "id": "cloudflare",
+          "name": "Cloudflare",
+          "url": "https://www.cloudflare.com/trust-hub/gdpr/",
+          "purpose": "Network protection and content delivery",
+          "locations": [
+            {
+              "country": "US"
+            }
+          ],
+          "dataCategories": [
+            "request metadata",
+            "IP addresses"
+          ],
+          "status": "implemented",
+          "verification": "reviewed"
+        },
+        {
+          "id": "payments",
+          "name": "Stripe",
+          "url": "https://stripe.com/legal/dpa",
+          "purpose": "Payment processing",
+          "locations": [
+            {
+              "country": "US"
+            }
+          ],
+          "dataCategories": [
+            "billing details"
+          ],
+          "status": "implemented",
+          "verification": "reviewed"
+        },
+        {
+          "id": "email",
+          "name": "Example Mail",
+          "purpose": "Transactional email",
+          "locations": [
+            {
+              "country": "EU"
+            }
+          ],
+          "headquarters": {
+            "country": "DE"
+          },
+          "dataCategories": [
+            "email address"
+          ],
+          "status": "planned",
+          "gap": "Replacing our current email provider next month."
+        }
+      ]
+    },
+    "dataHandling": {
+      "title": "Data handling",
+      "description": "Where your data is stored, how long we keep it, and how it is deleted.",
+      "lastUpdated": "2026-11-01",
+      "reviewedAt": "2026-11-01",
+      "sections": [
+        {
+          "id": "deletion",
+          "title": "Deleting your data",
+          "include": "dataLifecycle"
+        },
+        {
+          "id": "backups",
+          "title": "Backups",
+          "include": "backups"
+        },
+        {
+          "id": "location",
+          "title": "Location of your data",
+          "include": "hosting",
+          "practices": [
+            {
+              "id": "transfers",
+              "title": "International transfers",
+              "statement": "If you are outside the United States, your data is transferred to and stored in the United States under Standard Contractual Clauses.",
+              "status": "implemented",
+              "verification": "reviewed"
+            }
+          ]
+        }
+      ]
+    },
+    "incidentResponse": {
+      "title": "Incident response",
+      "description": "How we handle security incidents and tell you about them.",
+      "lastUpdated": "2026-11-01",
+      "reviewedAt": "2026-11-01",
+      "process": [
+        "**Detect.** Security events and alerts reach the on-call engineer.",
+        "**Contain.** We stop the incident from spreading, revoking credentials and isolating systems as needed.",
+        "**Notify.** We tell affected customers, as described above.",
+        "**Recover and learn.** We restore service, and write up what happened and what we changed."
+      ],
+      "drills": "We rehearse restoring from backup every quarter.",
+      "history": {
+        "id": "history",
+        "title": "Breach history",
+        "statement": "To our knowledge, {{product.name}} has never had a data breach.",
+        "status": "implemented",
+        "verification": "reviewed"
+      }
+    },
+    "availability": {
+      "title": "Availability",
+      "description": "Uptime commitments for {{product.name}}.",
+      "lastUpdated": "2026-11-01",
+      "reviewedAt": "2026-11-01",
+      "noCommitment": "We do not offer a service-level agreement. We work to keep {{product.name}} available and publish its status.",
+      "statusPageUrl": "https://status.example.com"
+    }
+  }
+}
